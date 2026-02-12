@@ -1,12 +1,7 @@
 ﻿using FileAnalyzer.Core;
-using FileAnalyzer.Model;
 using FileAnalyzer.Services;
 using FileAnalyzer.Services.Logging;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FileAnalyzer
@@ -42,21 +37,21 @@ namespace FileAnalyzer
                     }
                     else
                     {
-                        Console.WriteLine("Dosya seçilmedi.");
+                        Console.WriteLine("Dosya Secilmedi.");
                         return;
                     }
                 }
 
                 var reader = FileReader.GetReader(filePath);
                 string content = reader.ReadFile(filePath);
-                logger.log($"okunan dosya: {filePath}");
+                logger.log($"Okunan Dosya: {filePath}");
 
                 var analyzer = new TextAnalyzer();
                 var result = analyzer.Analyze(content);
 
-                Console.WriteLine($"toplam kelime: {result.TotalWords}");
-                Console.WriteLine($"tekrar eden: {result.RepeatingWords}");
-                Console.WriteLine($"toplam noktalama işareti: {result.PuntactionCnt.Count}");
+                Console.WriteLine($"Toplam Kelime: {result.TotalWords}");
+                Console.WriteLine($"Tekrar Eden: {result.RepeatingWords}");
+                Console.WriteLine($"Toplam Noktalama Isareti: {result.PuntactionCnt.Count}");
 
                 foreach (var kv in result.PuntactionCnt)
                 {
@@ -71,12 +66,12 @@ namespace FileAnalyzer
             catch (NotSupportedException ex)
             {
                 Console.WriteLine(ex.Message);
-                logger.logError("bu dosya türü desteklenmiyor", ex);
+                logger.logError("Bu Dosya Turu Desteklenmiyor.", ex);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("hata oluştu");
-                logger.logError(" hata", ex);
+                Console.WriteLine("Hata Olustu");
+                logger.logError("Hata", ex);
             }
 
             Console.ReadKey();

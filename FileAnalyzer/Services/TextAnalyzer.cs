@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FileAnalyzer.Model;
 
 namespace FileAnalyzer.Services
@@ -30,10 +28,10 @@ namespace FileAnalyzer.Services
 
             var words = content
                 .Split(new char[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries)
-                .Where(w => w.Any(char.IsLetter)) 
+                .Where(w => w.Any(char.IsLetter))
                 .ToArray();
 
-            result.TotalWords = words.Length; 
+            result.TotalWords = words.Length;
 
             var wordGroups = words
                 .Where(w => !_stopWords.Contains(w)) // bağlaçları seç
@@ -43,7 +41,7 @@ namespace FileAnalyzer.Services
                 .OrderByDescending(kv => kv.Value)
                 .ToList();
 
-            result.RepeatingWords = wordGroups.Count; 
+            result.RepeatingWords = wordGroups.Count;
             result.RepeatingWordsList = wordGroups;
 
             // Her bir noktalama işaretinin kaç kez geçtiği raporlanmalıdır.
@@ -51,7 +49,7 @@ namespace FileAnalyzer.Services
                                      .GroupBy(c => c)
                                      .Select(g => new KeyValuePair<char, int>(g.Key, g.Count())) // kaç tane olduğunu say
                                      .OrderByDescending(kv => kv.Value)
-                                     .ToList(); 
+                                     .ToList();
             result.PuntactionCnt = punctuation;
 
             return result;

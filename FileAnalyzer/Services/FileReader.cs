@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileAnalyzer.Services
 {
@@ -24,7 +22,7 @@ namespace FileAnalyzer.Services
             var reader = _readers.FirstOrDefault(r => r.SupportedExtension == extension);
 
             if (reader == null)
-                throw new NotSupportedException($"dosya uzantısı desteklenmiyor: {extension}");
+                throw new NotSupportedException($"Dosya Uzantisi Desteklenmiyor: {extension}");
 
             return reader;
         }
