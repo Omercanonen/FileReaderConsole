@@ -8,7 +8,7 @@ using FileAnalyzer.Core;
 
 namespace FileAnalyzer.Services.FileReaders
 {
-    internal class TxtFileReader : IFileReader
+    public class TxtFileReader : IFileReader
     {
         public string SupportedExtension => ".txt";
 
