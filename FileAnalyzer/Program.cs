@@ -15,8 +15,6 @@ namespace FileAnalyzer
 
             try
             {
-                //string filePath = @"C:\Users\omerc\OneDrive\Belgeler\FileReader\Xss_DOMPurify_Rapor.pdf";
-
                 string filePath = string.Empty;
 
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
