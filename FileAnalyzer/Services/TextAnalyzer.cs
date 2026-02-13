@@ -9,7 +9,6 @@ namespace FileAnalyzer.Services
     {
         private readonly HashSet<string> _stopWords;
 
-        // Bağlaçları at
         public TextAnalyzer()
         {
             _stopWords = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -19,12 +18,11 @@ namespace FileAnalyzer.Services
         }
         public AnalysisResult Analyze(string content)
         {
-            var result = new AnalysisResult(); // nesne oluşturma 
+            var result = new AnalysisResult();
 
-            if (string.IsNullOrWhiteSpace(content)) // boş kontrolü 
+            if (string.IsNullOrWhiteSpace(content))
                 return result;
 
-            //var words = content.Split(new char[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries); // kelimeleri ayır
 
             var words = content
                 .Split(new char[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries)
@@ -34,9 +32,9 @@ namespace FileAnalyzer.Services
             result.TotalWords = words.Length;
 
             var wordGroups = words
-                .Where(w => !_stopWords.Contains(w)) // bağlaçları seç
-                .GroupBy(w => w, StringComparer.OrdinalIgnoreCase) // aynı kelime varsa grupla 
-                .Where(g => g.Count() > 1) // 1 den fazla olanları seç
+                .Where(w => !_stopWords.Contains(w))
+                .GroupBy(w => w, StringComparer.OrdinalIgnoreCase)
+                .Where(g => g.Count() > 1)
                 .Select(g => new KeyValuePair<string, int>(g.Key, g.Count()))
                 .OrderByDescending(kv => kv.Value)
                 .ToList();
@@ -44,10 +42,10 @@ namespace FileAnalyzer.Services
             result.RepeatingWords = wordGroups.Count;
             result.RepeatingWordsList = wordGroups;
 
-            // Her bir noktalama işaretinin kaç kez geçtiği raporlanmalıdır.
+     
             var punctuation = content.Where(char.IsPunctuation)
                                      .GroupBy(c => c)
-                                     .Select(g => new KeyValuePair<char, int>(g.Key, g.Count())) // kaç tane olduğunu say
+                                     .Select(g => new KeyValuePair<char, int>(g.Key, g.Count())) 
                                      .OrderByDescending(kv => kv.Value)
                                      .ToList();
             result.PuntactionCnt = punctuation;

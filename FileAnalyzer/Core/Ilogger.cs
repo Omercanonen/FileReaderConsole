@@ -2,9 +2,9 @@
 
 namespace FileAnalyzer.Core
 {
-    public interface Ilogger
+    public interface ILogger
     {
-        void log(string message);
-        void logError(string message, Exception ex);
+        void Log(string message);
+        void LogError(string message, Exception ex);
     }
 }

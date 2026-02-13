@@ -1,4 +1,5 @@
 ﻿using FileAnalyzer.Core;
+using FileAnalyzer.Core.Enums;
 using FileAnalyzer.Services;
 using FileAnalyzer.Services.Logging;
 using System;
@@ -11,70 +12,121 @@ namespace FileAnalyzer
         [STAThread]
         static void Main(string[] args)
         {
-            Ilogger logger = new FileLogger();
-
-            try
+            ILogger logger = new FileLogger();
+            while (true)
             {
-                //string filePath = @"C:\Users\omerc\OneDrive\Belgeler\FileReader\Xss_DOMPurify_Rapor.pdf";
-
-                string filePath = string.Empty;
-
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                try
                 {
-                    openFileDialog.InitialDirectory = "c:\\";
-                    openFileDialog.Filter =
-                        "Text files (*.txt)|*.txt|" +
-                        "Word files (*.docx)|*.docx|" +
-                        "PDF files (*.pdf)|*.pdf|" +
-                        "All files (*.*)|*.*";
+                    Console.Clear();
+                    Console.WriteLine("Please Select a File:\n");
 
-                    openFileDialog.FilterIndex = 1;
-                    openFileDialog.RestoreDirectory = true;
-
-                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    foreach (FileType type in Enum.GetValues(typeof(FileType)))
                     {
-                        filePath = openFileDialog.FileName;
+                        Console.WriteLine(
+                            $"{(int)type} - {type} ({type.GetExtension()})"
+                        );
                     }
-                    else
+
+                    Console.WriteLine("E - Exit");
+
+                    Console.Write("\nSecim: ");
+                    string input = Console.ReadLine();
+
+
+                    if (input.Equals("e", StringComparison.OrdinalIgnoreCase))
                     {
-                        Console.WriteLine("Dosya Secilmedi.");
-                        return;
+                        break;
                     }
+
+                    Console.WriteLine("\nStarting Analysis");
+
+                    if (!int.TryParse(input, out int secim) ||
+                        !Enum.IsDefined(typeof(FileType), secim))
+                    {
+                        Console.WriteLine("Invalid Selection.");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadKey();
+                        continue; // başa dön
+                    }
+
+                    FileType selectedType = (FileType)secim;
+
+                    string filePath = string.Empty;
+
+                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                    {
+                        string ext = selectedType.GetExtension();
+                        string extName = ext.TrimStart('.').ToUpper();
+
+                        openFileDialog.InitialDirectory = "c:\\";
+                        openFileDialog.Filter =
+                            $"{extName} files (*{ext})|*{ext}";
+
+                        openFileDialog.FilterIndex = 1;
+                        openFileDialog.RestoreDirectory = true;
+
+                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            filePath = openFileDialog.FileName;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Cannot Select File");
+                            Console.WriteLine("Press any key to continue");
+                            Console.ReadKey();
+                            continue; // başa dön
+                        }
+                    }
+
+                    var reader = FileReader.GetReader(filePath);
+
+                    string content = reader.ReadFile(filePath);
+
+                    logger.Log($"Okunan Dosya: {filePath}");
+
+                    var analyzer = new TextAnalyzer();
+
+                    var result = analyzer.Analyze(content);
+
+                    Console.WriteLine($"\nTotal Words: {result.TotalWords}");
+                    Console.WriteLine($"Repeating: {result.RepeatingWords}");
+                    Console.WriteLine($"Total Punctuations: {result.PuntactionCnt.Count}");
+
+                    foreach (var kv in result.PuntactionCnt)
+                    {
+                        Console.WriteLine($"{kv.Key}: {kv.Value}");
+                    }
+
+                    foreach (var kv in result.RepeatingWordsList)
+                    {
+                        Console.WriteLine($"{kv.Key}: {kv.Value}");
+                    }
+
+                    Console.WriteLine("\nAnalysis Completed");
+                    Console.WriteLine("Press E to Exit, Any Key to Continue");
+
+                    var key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.E)
+                    {
+                        break;
+                    }
+                    Console.ReadKey();
                 }
-
-                var reader = FileReader.GetReader(filePath);
-                string content = reader.ReadFile(filePath);
-                logger.log($"Okunan Dosya: {filePath}");
-
-                var analyzer = new TextAnalyzer();
-                var result = analyzer.Analyze(content);
-
-                Console.WriteLine($"Toplam Kelime: {result.TotalWords}");
-                Console.WriteLine($"Tekrar Eden: {result.RepeatingWords}");
-                Console.WriteLine($"Toplam Noktalama Isareti: {result.PuntactionCnt.Count}");
-
-                foreach (var kv in result.PuntactionCnt)
+                catch (NotSupportedException ex)
                 {
-                    Console.WriteLine($"{kv.Key}: {kv.Value}");
+                    Console.WriteLine(ex.Message);
+                    logger.LogError("This file type is not supported.", ex);
                 }
-
-                foreach (var kv in result.RepeatingWordsList)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"{kv.Key}: {kv.Value}");
+                    Console.WriteLine("Error Occurred");
+                    logger.LogError("Error", ex);
                 }
             }
-            catch (NotSupportedException ex)
-            {
-                Console.WriteLine(ex.Message);
-                logger.logError("Bu Dosya Turu Desteklenmiyor.", ex);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Hata Olustu");
-                logger.logError("Hata", ex);
-            }
 
-            Console.ReadKey();
+            Console.WriteLine("\nShutting down");
+            
         }
     }
 }

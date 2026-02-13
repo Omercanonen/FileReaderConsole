@@ -19,10 +19,10 @@ namespace FileAnalyzer.Services
         public static IFileReader GetReader(string filePath)
         {
             string extension = Path.GetExtension(filePath).ToLower();
-            var reader = _readers.FirstOrDefault(r => r.SupportedExtension == extension);
+            var reader = _readers.FirstOrDefault(r => r.FileType.GetExtension() == extension);
 
             if (reader == null)
-                throw new NotSupportedException($"Dosya Uzantisi Desteklenmiyor: {extension}");
+                throw new NotSupportedException($"File not supported {extension}");
 
             return reader;
         }

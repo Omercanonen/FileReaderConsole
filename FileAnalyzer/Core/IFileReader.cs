@@ -1,8 +1,10 @@
-﻿namespace FileAnalyzer.Core
+﻿using FileAnalyzer.Core.Enums;
+
+namespace FileAnalyzer.Core
 {
     public interface IFileReader
     {
-        string SupportedExtension { get; }
+        FileType FileType { get; }
         string ReadFile(string filePath);
     }
 }

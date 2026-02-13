@@ -89,8 +89,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\EnumExtensions.cs" />
+    <Compile Include="Core\Enums\FileType.cs" />
     <Compile Include="Core\IFileReader.cs" />
-    <Compile Include="Core\Ilogger.cs" />
+    <Compile Include="Core\ILogger.cs" />
     <Compile Include="Model\AnalysisResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

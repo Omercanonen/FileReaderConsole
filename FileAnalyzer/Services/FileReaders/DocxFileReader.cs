@@ -1,13 +1,13 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using FileAnalyzer.Core;
+using FileAnalyzer.Core.Enums;
 using System.Text;
 
 namespace FileAnalyzer.Services.FileReaders
 {
     public class DocxFileReader : IFileReader
     {
-        public string SupportedExtension => ".docx";
-
+        public FileType FileType => FileType.DocxFormat;
         public string ReadFile(string filePath)
         {
             StringBuilder text = new StringBuilder();

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace FileAnalyzer.Services.Logging
 {
-    public class FileLogger : Ilogger
+    public class FileLogger : ILogger
     {
         private readonly string _logFilePath;
 
@@ -15,13 +15,13 @@ namespace FileAnalyzer.Services.Logging
             _logFilePath = Path.Combine(folder, "app_log.txt");
         }
 
-        public void log(string message)
+        public void Log(string message)
         {
             File.AppendAllText(_logFilePath, $"{DateTime.Now}: INFO - {message}{Environment.NewLine}");
         }
 
 
-        public void logError(string message, Exception ex)
+        public void LogError(string message, Exception ex)
         {
             string logMsg = $"{DateTime.Now}: ERROR - {message} | Details: {ex.Message}{Environment.NewLine}";
             File.AppendAllText(_logFilePath, logMsg);
